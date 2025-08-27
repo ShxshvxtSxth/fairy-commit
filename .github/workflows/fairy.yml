@@ -13,8 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}        # ensures we checkout the branch
-          persist-credentials: true     # allows pushing
+          persist-credentials: true
+          fetch-depth: 0   # fetch full history so we can switch branches
+
+      - name: Detect default branch
+        id: branch
+        run: |
+          DEFAULT_BRANCH=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
+          echo "default_branch=$DEFAULT_BRANCH" >> $GITHUB_ENV
+          echo "Default branch is $DEFAULT_BRANCH"
+
+      - name: Switch to default branch
+        run: |
+          git checkout ${{ env.default_branch }}
 
       - name: Random delay if scheduled
         if: github.event_name == 'schedule'
@@ -38,4 +49,4 @@ jobs:
 
       - name: Push commits
         run: |
-          git push origin HEAD
+          git push origin HEAD:${{ env.default_branch }}
