@@ -26,7 +26,7 @@ jobs:
       - name: Configure git
         run: |
           git config --global user.name "ShxshvxtSxth"
-          git config --global user.email "sethshashvat18@gmail.com"
+          git config --global user.email "shashvatseth03@gmail.com"
 
       - name: Make random commits
         run: |
