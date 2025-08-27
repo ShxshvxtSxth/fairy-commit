@@ -1,0 +1,38 @@
+name: Fairy Commits
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # runs daily at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+
+      - name: Random delay if scheduled
+        if: github.event_name == 'schedule'
+        run: |
+          # Wait a random time between 0 and 1439 minutes (0-23:59)
+          RANDOM_DELAY=$(( RANDOM % 1440 ))
+          echo "Scheduled run detected. Waiting $RANDOM_DELAY minutes..."
+          sleep $(( RANDOM_DELAY * 60 ))
+
+      - name: Random commits
+        run: |
+          git config --global user.name "ShxshvxtSxth"
+          git config --global user.email "sethshashvat18@gmail.com"
+
+          # Generate a random number of commits (1-5)
+          NUM_COMMITS=$(( (RANDOM % 5) + 1 ))
+          echo "Making $NUM_COMMITS empty commits..."
+
+          for i in $(seq 1 $NUM_COMMITS); do
+            git commit --allow-empty -m "Plant grass #$i: $(date +'%Y-%m-%d %H:%M:%S')"
+          done
+
+          git push origin HEAD:main
