@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          persist-credentials: true
+          ref: ${{ github.ref }}        # ensures we checkout the branch
+          persist-credentials: true     # allows pushing
 
       - name: Random delay if scheduled
         if: github.event_name == 'schedule'
@@ -36,5 +38,4 @@ jobs:
 
       - name: Push commits
         run: |
-          DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
-          git push origin HEAD:$DEFAULT_BRANCH
+          git push origin HEAD
